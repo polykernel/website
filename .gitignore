@@ -1,2 +1,11 @@
+# Ignore ghc build artifacts
+*.hi
+*.o
+
+# Ignore nix build out links
 result-*
 /result
+
+# Ignore cache and test builds
+_cache
+_site
