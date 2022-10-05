@@ -2,7 +2,7 @@
 
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
-    haskellPackages.hakyll
-    cabal2nix
+    (haskellPackages.ghcWithPackages (p: with p; [ hakyll ]))
+    # cabal2nix
   ];
 }
