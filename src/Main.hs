@@ -4,7 +4,8 @@ module Main (main) where
 
 
 --------------------------------------------------------------------------------
-import          Data.Monoid     ((<>))
+import          Text.Pandoc.Highlighting (Style, haddock, styleToCss)
+import          Data.Monoid ((<>))
 import          Hakyll
 
 
@@ -14,6 +15,9 @@ config :: Configuration
 config = defaultConfiguration
     { tmpDirectory = "_tmp"
     }
+
+pandocHighlightingStyle :: Style
+pandocHighlightingStyle = haddock
 
 -- Entrypoint
 main :: IO ()
@@ -25,6 +29,12 @@ main = hakyllWith config $ do
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
+
+    -- Generate syntax highlighting stylesheet for pandoc
+    -- courtesy of Rebecca Skinner (https://rebeccaskinner.net/posts/2021-01-31-hakyll-syntax-highlighting.html)
+    create ["css/style.css"] $ do
+        route idRoute
+        compile $ makeItem $ styleToCss pandocHighlightingStyle
 
     match "pages/*.md" $ do
         -- Result written to `<destination-directory>/about.html'
