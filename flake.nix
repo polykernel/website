@@ -1,9 +1,5 @@
 {
-  description = "A basic flake for generating a static site";
-
-  # nixConfig = {
-  #   bash-prompt = "\\n\\[\\033[1;33m\\][\\[\\e]0;nix-develop: \\w\\a\\]nix-develop:\\w]λ \\[\\033[0m\\]";
-  # };
+  description = "A basic flake for static site generation";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -14,9 +10,18 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-      in {
+
+        sitepkgs = import ./. { inherit pkgs; };
+      in rec {
         devShells = flake-utils.lib.flattenTree {
           devenv = import ./shell.nix { inherit pkgs; };
+        };
+
+        packages = sitepkgs // { default = sitepkgs.site; };
+
+        apps = rec {
+          site-gen = flake-utils.lib.mkApp { drv = sitepkgs.generator; };
+          default = site-gen;
         };
       }
     );
