@@ -1,11 +1,16 @@
-# Ignore ghc build artifacts
+# Ignore GHC build artifacts
 *.hi
 *.o
 
-# Ignore nix build out links
+# Ignore cabal build results
+dist
+dist-*
+
+# Ignore Nix build out links
 result-*
 /result
 
-# Ignore cache and test builds
+# Ignore Hakyll cache and build results
 _cache
 _site
+_tmp

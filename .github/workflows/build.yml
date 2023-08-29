@@ -20,7 +20,7 @@ jobs:
           nix build .#site
           cp --recursive --dereference --no-preserve=mode,ownership result _site
 
-      - name: Upload page artifact
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1
 
   deploy:
