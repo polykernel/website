@@ -4,9 +4,8 @@ module Main (main) where
 
 
 --------------------------------------------------------------------------------
-import          Text.Pandoc.Highlighting (Style, haddock, styleToCss)
-import          Data.Monoid ((<>))
-import          Hakyll
+import Text.Pandoc.Highlighting (Style, haddock, styleToCss)
+import Hakyll
 
 
 --------------------------------------------------------------------------------
@@ -57,10 +56,11 @@ main = hakyllWith config $ do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let archiveCtx =
-                    listField "posts" postCtx (return posts) <>
-                    constField "title" "Archives"            <>
+            let
+                posts = recentFirst =<< loadAll "posts/*.md"
+                archiveCtx =
+                    listField "posts" postCtx posts <>
+                    constField "title" "Archives"   <>
                     defaultContext
 
             makeItem ""
@@ -72,9 +72,10 @@ main = hakyllWith config $ do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let indexCtx =
-                    listField "posts" postCtx (return posts) <>
+            let
+                posts = recentFirst =<< loadAll "posts/*.md"
+                indexCtx =
+                    listField "posts" postCtx posts <>
                     defaultContext
 
             getResourceBody
@@ -98,3 +99,4 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" <>
     defaultContext
+    
