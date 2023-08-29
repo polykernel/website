@@ -40,7 +40,7 @@ main = hakyllWith config $ do
         compile $ makeItem $ styleToCss pandocHighlightingStyle
 
     match "pages/*.md" $ do
-        -- Result written to `<destination-directory>/about.html'
+        -- Result written to `<destination-directory>/<page-name>.html'
         route   $ composeRoutes (gsubRoute "pages/" (const "")) (setExtension "html")
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -57,7 +57,7 @@ main = hakyllWith config $ do
         route idRoute
         compile $ do
             let
-                posts = recentFirst =<< loadAll "posts/*.md"
+                posts = recentFirst =<< loadAll "posts/*"
                 archiveCtx =
                     listField "posts" postCtx posts <>
                     constField "title" "Archives"   <>
@@ -73,7 +73,7 @@ main = hakyllWith config $ do
         route idRoute
         compile $ do
             let
-                posts = recentFirst =<< loadAll "posts/*.md"
+                posts = recentFirst =<< loadAll "posts/*"
                 indexCtx =
                     listField "posts" postCtx posts <>
                     defaultContext
