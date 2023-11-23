@@ -1,16 +1,18 @@
-# Ignore GHC build artifacts
+# GHC build artifacts
 *.hi
 *.o
 
-# Ignore cabal build results
+# cabal build results
 dist
 dist-*
 
-# Ignore Nix build out links
-result-*
-/result
+# Nix build out links
+result*
 
-# Ignore Hakyll cache and build results
+# Hakyll cache and build results
 _cache
 _site
 _tmp
+
+# Direnv
+.direnv
