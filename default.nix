@@ -13,7 +13,19 @@ let
     name = "site";
     version = "0.1.0";
     
-    src = pkgs.nix-gitignore.gitignoreSource [] ./.;
+    src = lib.fileset.toSource {
+      root = ./.;
+      fileset = lib.fileset.unions [
+        ./css
+        ./images
+        ./pages
+        ./posts
+        ./templates
+        ./CNAME
+        ./404.html
+        ./index.html
+      ];
+    };
     
     phases = [ "unpackPhase" "buildPhase" "installPhase" ];
 
