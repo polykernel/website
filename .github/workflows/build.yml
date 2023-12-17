@@ -10,33 +10,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v23
+        uses: cachix/install-nix-action@v24
 
       - name: Build site
         run: |
           nix build .#site
           cp --recursive --dereference --no-preserve=mode,ownership result _site
 
+      - name: Create page artifact
+        shell: sh
+        run: |
+          tar \
+          --dereference --hard-dereference \
+          --directory _site/ \
+          -cvf "$RUNNER_TEMP/artifact.tar" \
+          .
+
       - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-artifact@v3
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
       pages: write
       id-token: write
 
     environment:
       name: github-pages
-      url: ${{ steps.deployments.outputs.site_url }}
+      url: ${{ steps.deployments.outputs.page_url }}
 
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
