@@ -12,8 +12,8 @@
         pkgs = import nixpkgs { inherit system; };
         site-pkgs = import ./. { inherit pkgs; };
       in {
-        devShells = flake-utils.lib.flattenTree {
-          devenv = import ./shell.nix { inherit pkgs; };
+        devShells = {
+          default = import ./shell.nix { inherit pkgs; };
         };
 
         packages = {
