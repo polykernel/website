@@ -1,4 +1,6 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> {}
+}:
 
 let
   inherit (pkgs) stdenv lib;
@@ -7,12 +9,12 @@ let
 
   haskellPackages = pkgs.haskell.packages.${ghc-version};
 
-  generator = pkgs.haskellPackages.callPackage (import ./generator) {};
+  generator = pkgs.haskellPackages.callPackage (import ./generator) { inherit (pkgs.nodePackages) js-beautify; };
 
   site = stdenv.mkDerivation {
     name = "site";
     version = "0.1.0";
-    
+
     src = lib.fileset.toSource {
       root = ./.;
       fileset = lib.fileset.unions [
@@ -26,10 +28,10 @@ let
         ./index.html
       ];
     };
-    
+
     phases = [ "unpackPhase" "buildPhase" "installPhase" ];
 
-    buildInputs = [ generator ];
+    nativeBuildInputs = [ generator ];
 
     # Fixes from https://github.com/rpearce/hakyll-nix-template/blob/main/flake.nix#L63-L66
     # courtesy of Robert Pearce
@@ -50,4 +52,6 @@ let
     '';
   };
 in
-{ inherit generator site; }
+{
+  inherit generator site;
+}

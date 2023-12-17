@@ -4,8 +4,11 @@
   base,
   hakyll,
   pandoc,
+  makeWrapper,
+  js-beautify,
 }:
 
+# NB: this is haskellPackages.mkDerivation not stdenv.mkDerivation
 mkDerivation {
   pname = "website";
 
@@ -24,8 +27,17 @@ mkDerivation {
 
   isExecutable = true;
 
+  doHaddock = false;
+
+  buildTools = [ makeWrapper ];
+
   executableHaskellDepends = [ base hakyll pandoc ];
-  
+
+  postInstall = ''
+    wrapProgram $out/bin/hakyll-site \
+      --prefix PATH : ${lib.makeBinPath [ js-beautify ]}
+  '';
+
   license = lib.licenses.mit;
 
   mainProgram = "hakyll-site";

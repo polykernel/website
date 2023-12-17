@@ -45,6 +45,7 @@ main = hakyllWith config $ do
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
+            >>= prettifyHtml
 
     match "posts/*.md" $ do
         route $ setExtension "html"
@@ -52,6 +53,7 @@ main = hakyllWith config $ do
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
+            >>= prettifyHtml
 
     create ["archive.html"] $ do
         route idRoute
@@ -67,7 +69,7 @@ main = hakyllWith config $ do
                 >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
                 >>= loadAndApplyTemplate "templates/default.html" archiveCtx
                 >>= relativizeUrls
-
+                >>= prettifyHtml
 
     match "index.html" $ do
         route idRoute
@@ -82,12 +84,14 @@ main = hakyllWith config $ do
                 >>= applyAsTemplate indexCtx
                 >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
+                >>= prettifyHtml
 
     match "404.html" $ do
         route idRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
+            >>= prettifyHtml
 
 
     match "templates/*" $ compile templateBodyCompiler
@@ -99,4 +103,10 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" <>
     defaultContext
-    
+
+-- Compilers
+prettifyHtmlCompiler :: Compiler (Item String)
+prettifyHtmlCompiler = getResourceString >>= prettifyHtml
+
+prettifyHtml :: Item String -> Compiler (Item String)
+prettifyHtml = withItemBody (unixFilter "js-beautify" ["-f", "-", "--type", "html", "--no-preserve-newlines"])
