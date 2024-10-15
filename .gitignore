@@ -3,16 +3,15 @@
 *.o
 
 # cabal build results
-dist
-dist-*
+dist-*/
 
 # Nix build out links
 result*
 
 # Hakyll cache and build results
-_cache
-_site
-_tmp
+_cache/
+_site/
+_tmp/
 
-# Direnv
-.direnv
+# direnv
+.direnv/
