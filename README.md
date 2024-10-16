@@ -8,7 +8,7 @@ This repository contains the source code of my personal website generated using 
   - [X] About
   - [X] Contact
   - [X] Posts
-- [X] Automate gh-pages deployment with GitHub Action
-- [ ] Add syntax highlighting support
+- [X] Automate deployment to Cloudflare Pages with GitHub Action
+- [X] Add favicon
 - [ ] Add Rss/Atom feed
 - [ ] Generate sitemap.xml
