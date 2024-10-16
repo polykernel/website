@@ -1,0 +1,22 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <filter height="200%" width="200%" y="-50%" x="-50%" id="svg_21_blur">
+   <feGaussianBlur stdDeviation="10" in="SourceGraphic"/>
+  </filter>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <g opacity="0.5" filter="url(#svg_21_blur)" id="svg_21">
+   <rect id="svg_17" height="360" width="50" y="96" x="186" fill="#FFF093"/>
+   <rect id="svg_18" height="180" width="50" y="96" x="316" fill="#FFF093"/>
+   <rect id="svg_19" height="50" width="180" y="96" x="186" fill="#FFF093"/>
+   <rect id="svg_20" height="50" width="180" y="226" x="186" fill="#FFF093"/>
+  </g>
+  <g filter="url(#svg_16_blur)" id="svg_16">
+   <rect id="svg_12" height="360" width="50" y="76" x="166" fill="#FABA6F"/>
+   <rect id="svg_13" height="180" width="50" y="76" x="296" fill="#FABA6F"/>
+   <rect id="svg_14" height="50" width="180" y="76" x="166" fill="#FABA6F"/>
+   <rect id="svg_15" height="50" width="180" y="206" x="166" fill="#FABA6F"/>
+  </g>
+ </g>
+</svg>
