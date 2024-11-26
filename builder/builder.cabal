@@ -17,6 +17,6 @@ executable site-builder
     -with-rtsopts=-N
   default-language: Haskell2010
   build-depends:
-    base    >= 4.18 && < 5,
+    base    >= 4.17 && < 5,
     hakyll  >= 4.16,
-    pandoc  >= 3.3
+    pandoc  >= 3.5

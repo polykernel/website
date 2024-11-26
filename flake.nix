@@ -1,71 +1,101 @@
 {
   description = "Basic flake for static site generation";
 
+  nixConfig = {
+    # allow-import-from-derivation = "true";
+    extra-substituters = [
+      "https://cache.iog.io"
+    ];
+    extra-trusted-public-keys = [
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+    ];
+  };
+
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    haskellNix.url = "github:input-output-hk/haskell.nix";
+    nixpkgs.follows = "haskellNix/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
-    inputs:
+    {
+      self,
+      nixpkgs,
+      haskellNix,
+      flake-utils,
+      ...
+    }@inputs:
     let
-      compilerVersion = "ghc98";
+      compilerVersion = "ghc96";
 
-      overlay = final: prev: {
-        myHaskellPackages = prev.haskell.packages.${compilerVersion}.override {
-          overrides = hfinal: hprev: {
-            builder = hprev.callCabal2nix "builder" ./builder { };
-            pandoc = hprev.pandoc_3_3;
-            texmath = hprev.texmath_0_12_8_9;
-            tls = hprev.tls_2_1_0;
-            typst = hprev.typst_0_5_0_5;
-            typst-symbols = hprev.typst-symbols_0_1_6;
-            crypton-connection = hprev.crypton-connection_0_4_1;
-            toml-parser = hprev.toml-parser_2_0_1_0;
-          };
-        };
-      };
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
 
       perSystem =
         system:
         let
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [ overlay ];
+          overlays = [
+            haskellNix.overlay
+            (final: prev: {
+              hakyllProject = final.haskell-nix.project' {
+                src = ./builder;
+                compiler-nix-name = "ghc948";
+                modules = [ { doHaddock = false; } ];
+                shell.buildInputs = [
+                  site-builder
+                ];
+                shell.tools = {
+                  cabal = "latest";
+                  hlint = "latest";
+                  haskell-language-server = "latest";
+                };
+              };
+            })
+          ];
+
+          pkgs = import nixpkgs {
+            inherit overlays system;
+            inherit (haskellNix) config;
           };
 
-          hsPkgs = pkgs.myHaskellPackages;
-          hsLib = pkgs.haskell.lib;
+          project = pkgs.hakyllProject;
 
-          builder = hsLib.compose.justStaticExecutables hsPkgs.builder;
+          flake = project.flake { };
 
-          builder-shell = hsPkgs.shellFor {
-            withHoogle = false;
-            packages = p: [ p.builder ];
-            buildInputs = [
-              hsPkgs.cabal-install
-              hsPkgs.haskell-language-server
-              hsPkgs.hlint
-              hsPkgs.ormolu
-              pkgs.nodePackages.js-beautify
-            ];
-          };
+          executable = "builder:exe:site-builder";
+
+          site-builder = flake.packages.${executable};
 
           website = pkgs.callPackage ./website.nix {
             inherit (pkgs.nodePackages) js-beautify;
-            site-builder = builder;
+            inherit site-builder;
           };
         in
-        {
+        flake
+        // nixpkgs.lib.fix (_self: {
           devShells = {
-            inherit builder-shell;
-            default = builder-shell;
+            builder-shell = project.shellFor {
+              tools = {
+                cabal = "latest";
+                hlint = "latest";
+                haskell-language-server = "latest";
+              };
+
+              nativeBuildInputs = with pkgs; [
+                nodePackages.js-beautify
+              ];
+
+              exactDeps = true;
+            };
+            default = _self.devShells.builder-shell;
           };
           packages = {
-            inherit builder website;
-            default = website;
+            inherit site-builder website;
+            default = _self.packages.website;
           };
-        };
+        });
     in
-    inputs.flake-utils.lib.eachDefaultSystem perSystem;
+    flake-utils.lib.eachSystem supportedSystems perSystem;
 }
