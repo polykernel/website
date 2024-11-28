@@ -18,13 +18,24 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Setup netrc
+        shell: sh
+        run: |
+          mkdir ${{ runner.temp }}/nix
+          echo "machine attic.polykernel.cc password ${{ secrets.ATTIC_CACHE_JWT }}" > ${{ runner.temp }}/nix/netrc
+
       - name: Install Nix
         uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            trusted-public-keys = website:S46wKMvMTuVLtOUBr9sk4BA/r7QrPDgigCV/gG75W+s= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+            substituters = https://attic.polykernel.cc/website https://cache.nixos.org/
+            netrc-file = ${{ runner.temp }}/nix/netrc
 
       - name: Build site
         shell: sh
         run: |
-          nix build .#website
+          nix build .#website --accept-flake-config
           cp --recursive --dereference --no-preserve=mode,ownership result dist
 
       - name: Deploy to Cloudflare Pages
