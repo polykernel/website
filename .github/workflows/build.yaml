@@ -28,7 +28,7 @@ jobs:
         uses: cachix/install-nix-action@v30
         with:
           extra_nix_config: |
-            trusted-public-keys = website:S46wKMvMTuVLtOUBr9sk4BA/r7QrPDgigCV/gG75W+s= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+            trusted-public-keys = website:RLkaxRV2fh6geBXFKGl3DQorHdxhGM4KiXbcpOQvLSU= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
             substituters = https://attic.polykernel.cc/website https://cache.nixos.org/
             netrc-file = ${{ runner.temp }}/nix/netrc
 
