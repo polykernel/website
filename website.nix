@@ -40,7 +40,9 @@ stdenv.mkDerivation {
   ];
 
   LANG = "en_US.UTF-8";
-  LOCALE_ARCHIVE = lib.optionalString (stdenv.buildPlatform.libc == "glibc") "${lib.getLib glibcLocalesUtf8}/lib/locale/locale-archive";
+  LOCALE_ARCHIVE = lib.optionalString (
+    stdenv.buildPlatform.libc == "glibc"
+  ) "${lib.getLib glibcLocalesUtf8}/lib/locale/locale-archive";
 
   buildPhase = ''
     runHook preBuild

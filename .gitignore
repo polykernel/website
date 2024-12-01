@@ -15,3 +15,6 @@ _tmp/
 
 # direnv
 .direnv/
+
+# pre-commit
+.pre-commit-config.yaml

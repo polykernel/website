@@ -2,7 +2,6 @@
   description = "Basic flake for static site generation";
 
   nixConfig = {
-    # allow-import-from-derivation = "true";
     extra-substituters = [
       "https://cache.iog.io"
     ];
@@ -15,6 +14,7 @@
     haskellNix.url = "github:input-output-hk/haskell.nix";
     nixpkgs.follows = "haskellNix/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
   };
 
   outputs =
@@ -23,11 +23,10 @@
       nixpkgs,
       haskellNix,
       flake-utils,
+      pre-commit-hooks,
       ...
     }@inputs:
     let
-      compilerVersion = "ghc96";
-
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -41,16 +40,8 @@
             (final: prev: {
               hakyllProject = final.haskell-nix.project' {
                 src = ./builder;
-                compiler-nix-name = "ghc948";
+                compiler-nix-name = "ghc96";
                 modules = [ { doHaddock = false; } ];
-                shell.buildInputs = [
-                  site-builder
-                ];
-                shell.tools = {
-                  cabal = "latest";
-                  hlint = "latest";
-                  haskell-language-server = "latest";
-                };
               };
             })
           ];
@@ -75,22 +66,47 @@
         in
         flake
         // nixpkgs.lib.fix (_self: {
+          apps = {
+            site-builder = flake-utils.mkApp { drv = site-builder; };
+            default = _self.apps.site-builder;
+          };
+
+          checks = {
+            pre-commit-check = pre-commit-hooks.lib.${system}.run {
+              src = ./.;
+              hooks = {
+                treefmt.enable = true;
+                treefmt.settings = {
+                  formatters = [
+                    pkgs.nixfmt-rfc-style
+                    pkgs.typos
+                    pkgs.toml-sort
+                  ];
+                };
+              };
+            };
+          };
+
           devShells = {
             builder-shell = project.shellFor {
+              inherit (_self.checks.pre-commit-check) shellHook;
               tools = {
                 cabal = "latest";
-                hlint = "latest";
+                cabal-fmt = "latest";
                 haskell-language-server = "latest";
+                hlint = "latest";
+                ormolu = "latest";
               };
 
-              nativeBuildInputs = with pkgs; [
-                nodePackages.js-beautify
-              ];
+              nativeBuildInputs = [
+                pkgs.nodePackages.js-beautify
+              ] ++ _self.checks.pre-commit-check.enabledPackages;
 
               exactDeps = true;
             };
             default = _self.devShells.builder-shell;
           };
+
           packages = {
             inherit site-builder website;
             default = _self.packages.website;
