@@ -48,7 +48,7 @@ stdenv.mkDerivation {
     runHook preBuild
 
     # Build the site
-    ${lib.getExe site-builder} build
+    site-builder build
 
     # Format html files
     echo 'Post-processing'
