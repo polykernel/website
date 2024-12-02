@@ -1,0 +1,8 @@
+---
+title: The start of a topiary adventure
+date: 2024-12-01
+---
+
+I finally found the time to set up my own hypertext knowledge base using the excellent [Forester](https://www.jonmsterling.com/foreign-forester-index.xml) tool developed by Jon Sterling and contributors.
+
+The project, Perennial Curiosity, is an experiment with building a forest of evergreen notes on mathematics (and computer science in the future). A selection of exemplary forests in this regard that serve as inspiration for this project are: Utensil's [forest](https://utensil.github.io/forest/index.xml), CAIMEO's [Rabbit Hole](https://caimeo.online/index.xml) and Trebor's [forest](https://trebor-huang.github.io/forest/). The grunt work has been done and the website is now deployed at <https://perennialcuriosity.cc/index.xml> ([source](https://github.com/polykernel/perennial-curiosity)) for your viewing pleasure. The initial plan is to grow the forest to include all the mathematics topics I have learned thus far in my undergraduate studies. The forest is very barren at the moment however I will be progressively adding more content beginning with notes on introductory group theory and general topology. My motivation for the project is twofold: one is to reinforce my own understanding of the written concepts/topics, while the other is to document my personal journey of learning as to not [throw away the ladder one climbs up](https://en.wikipedia.org/wiki/Wittgenstein%27s_ladder). As a byproduct, it will also have produced a reference on the subjects I have jotted down notes upon. I hope these notes will be of some utility to other learners and enthusiasts as well.
