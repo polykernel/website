@@ -1,5 +1,6 @@
 ---
-title: Hello World
+title: Hello world
+date: 2022-10-14
 ---
 
 Today, I finally set up my website using [Hakyll](https://jaspervdj.be/hakyll).
