@@ -4,9 +4,11 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.iog.io"
+      "https://attic.polykernel.cc/website"
     ];
     extra-trusted-public-keys = [
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      "website:RLkaxRV2fh6geBXFKGl3DQorHdxhGM4KiXbcpOQvLSU="
     ];
   };
 
